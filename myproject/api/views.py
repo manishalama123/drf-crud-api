@@ -2,7 +2,7 @@ from django.shortcuts import render
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, APIView
 from .serializer import PersonSerializer
-from rest_framework import status, generics
+from rest_framework import status, generics, mixins
 
 from .models import Person
 #Function based view 
@@ -82,20 +82,47 @@ from .models import Person
 
 #GENERIC CLASS API VIEW
 
-class PersonCreateAPIView(generics.CreateAPIView):
+# class PersonCreateAPIView(generics.CreateAPIView):
+#     queryset = Person.objects.all()
+#     serializer_class = PersonSerializer
+
+# class PersonListCreateAPIView(generics.ListCreateAPIView):
+#     queryset = Person.objects.all()
+#     serializer_class = PersonSerializer
+
+# class PersonRetrieveAPIView(generics.RetrieveAPIView):
+#     queryset = Person.objects.all()
+#     serializer_class = PersonSerializer
+
+# class PersonRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
+#     queryset = Person.objects.all()
+#     serializer_class = PersonSerializer
+
+
+# MIXIN
+class PersonListCreateView(mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericAPIView):
+
     queryset = Person.objects.all()
     serializer_class = PersonSerializer
 
-class PersonListCreateAPIView(generics.ListCreateAPIView):
+    def get(self,request,*args, **kwargs):
+        return self.list(request,*args, **kwargs)
+    
+    def post(self,request,*args, **kwargs):
+        return self.create(request,*args, **kwargs)
+
+class PersonUpdateDeleteView(mixins.RetrieveModelMixin, mixins.UpdateModelMixin,
+                             mixins.DestroyModelMixin, generics.GenericAPIView):
+
     queryset = Person.objects.all()
     serializer_class = PersonSerializer
 
-class PersonRetrieveAPIView(generics.RetrieveAPIView):
-    queryset = Person.objects.all()
-    serializer_class = PersonSerializer
-
-class PersonRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Person.objects.all()
-    serializer_class = PersonSerializer
-
-
+    def get(self,request,*args, **kwargs):
+        return self.retrieve(request,*args, **kwargs)
+    
+    def put(self,request,*args, **kwargs):
+        return self.update(request,*args, **kwargs)
+    
+    
+    def delete(self,request,*args, **kwargs):
+        return self.destroy(request,*args, **kwargs)

@@ -12,15 +12,20 @@
 # ]
 from django.urls import path
 from .views import (
-    PersonCreateAPIView,
-    PersonListCreateAPIView,
-    PersonRetrieveAPIView,
-    PersonRetrieveUpdateDestroyAPIView,
+    # PersonCreateAPIView,
+    # PersonListCreateAPIView,
+    # PersonRetrieveAPIView,
+    # PersonRetrieveUpdateDestroyAPIView,
+    PersonListCreateView,
+    PersonUpdateDeleteView
 )
 
 urlpatterns = [
-    path('create/', PersonCreateAPIView.as_view(), name='person-create'),  
-    path('', PersonListCreateAPIView.as_view(), name='person-list-create'),  
-    path('<int:pk>/', PersonRetrieveAPIView.as_view(), name='person-retrieve'),  
-    path('<int:pk>/update-delete/', PersonRetrieveUpdateDestroyAPIView.as_view(), name='person-update-delete'),
+    # path('create/', PersonCreateAPIView.as_view(), name='person-create'),  
+    # path('', PersonListCreateAPIView.as_view(), name='person-list-create'),  
+    # path('<int:pk>/', PersonRetrieveAPIView.as_view(), name='person-retrieve'),  
+    # path('<int:pk>/update-delete/', PersonRetrieveUpdateDestroyAPIView.as_view(), name='person-update-delete'),
+
+    path('', PersonListCreateView.as_view(), name='person-list-create'),
+    path('<int:pk>/', PersonUpdateDeleteView.as_view(), name='person-detail'),
 ]
