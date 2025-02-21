@@ -3,6 +3,9 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view, APIView
 from .serializer import PersonSerializer
 from rest_framework import status, generics, mixins
+from rest_framework.authentication import BasicAuthentication
+from rest_framework.permissions import AllowAny, IsAuthenticated, IsAdminUser
+from django.contrib.auth import logout
 
 from .models import Person
 #Function based view 
@@ -99,11 +102,18 @@ from .models import Person
 #     serializer_class = PersonSerializer
 
 
+class LogoutView(APIView):
+    def post(self, request):
+        logout(request)  # Clears session on the server
+        return Response({"message": "Logged out successfully"}, status=200)
+
 # MIXIN
 class PersonListCreateView(mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericAPIView):
 
     queryset = Person.objects.all()
     serializer_class = PersonSerializer
+    authentication_classes = [BasicAuthentication]
+    permission_classes = [IsAdminUser]
 
     def get(self,request,*args, **kwargs):
         return self.list(request,*args, **kwargs)

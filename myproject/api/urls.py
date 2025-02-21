@@ -17,7 +17,8 @@ from .views import (
     # PersonRetrieveAPIView,
     # PersonRetrieveUpdateDestroyAPIView,
     PersonListCreateView,
-    PersonUpdateDeleteView
+    PersonUpdateDeleteView,
+    LogoutView
 )
 
 urlpatterns = [
@@ -28,4 +29,6 @@ urlpatterns = [
 
     path('', PersonListCreateView.as_view(), name='person-list-create'),
     path('<int:pk>/', PersonUpdateDeleteView.as_view(), name='person-detail'),
+    path('logout/', LogoutView.as_view(), name='logout'),
+
 ]
