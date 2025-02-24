@@ -13,6 +13,7 @@
 # ]
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
+
 from .views import (
     # PersonCreateAPIView,
     # PersonListCreateAPIView,
@@ -21,7 +22,9 @@ from .views import (
     # PersonListCreateView,
     # PersonUpdateDeleteView,
     # LogoutView
-    PersonViewSet
+    PersonViewSet,
+    CustomAuthToken,
+    ProtectedView
 )
 
 # urlpatterns = [
@@ -38,5 +41,11 @@ from .views import (
 router = DefaultRouter()
 router.register('persons', PersonViewSet)
 urlpatterns = [
-    path('', include(router.urls)),
+    path('api/token/', CustomAuthToken.as_view(), name='api_token_auth'),  # Token endpoint
+    path('api/protected/', ProtectedView.as_view(), name='protected_api'),  # Protected view
+    path('', include(router.urls)),  # Register ViewSet URLs
 ]
+
+# urlpatterns = [
+#     path('', include(router.urls)),
+# ]
