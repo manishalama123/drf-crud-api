@@ -12,7 +12,9 @@
 
 # ]
 from django.urls import path, include
+from django.http import JsonResponse
 from rest_framework.routers import DefaultRouter
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
 from .views import (
     # PersonCreateAPIView,
@@ -23,8 +25,9 @@ from .views import (
     # PersonUpdateDeleteView,
     # LogoutView
     PersonViewSet,
-    CustomAuthToken,
-    ProtectedView
+    # CustomAuthToken,
+    ProtectedView,
+
 )
 
 # urlpatterns = [
@@ -40,12 +43,20 @@ from .views import (
 # ]
 router = DefaultRouter()
 router.register('persons', PersonViewSet)
+#Token Authentication
+# urlpatterns = [
+#     path('api/token/', CustomAuthToken.as_view(), name='api_token_auth'),  # Token endpoint
+#     path('api/protected/', ProtectedView.as_view(), name='protected_api'),  # Protected view
+#     path('', include(router.urls)),  # Register ViewSet URLs
+# ]
+
+
+def home(request):
+    return JsonResponse({"message": "Welcome to the API! Use /api/token/ to get a token."})
 urlpatterns = [
-    path('api/token/', CustomAuthToken.as_view(), name='api_token_auth'),  # Token endpoint
-    path('api/protected/', ProtectedView.as_view(), name='protected_api'),  # Protected view
-    path('', include(router.urls)),  # Register ViewSet URLs
+     path('', home, name='home'),
+    path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),  # Get access & refresh tokens
+    path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),  # Get new access token
+    path('', include(router.urls)),
 ]
 
-# urlpatterns = [
-#     path('', include(router.urls)),
-# ]
