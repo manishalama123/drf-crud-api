@@ -24,9 +24,12 @@ from .views import (
     # PersonListCreateView,
     # PersonUpdateDeleteView,
     # LogoutView
-    PersonViewSet,
+    # PersonViewSet,
     # CustomAuthToken,
-    ProtectedView,
+    # ProtectedView,
+    SampleThrottle,
+    CustomThrottleView,
+    AnotherView,
 
 )
 
@@ -41,8 +44,8 @@ from .views import (
 #     path('logout/', LogoutView.as_view(), name='logout'),
 
 # ]
-router = DefaultRouter()
-router.register('persons', PersonViewSet)
+# router = DefaultRouter()
+# router.register('persons', PersonViewSet)
 #Token Authentication
 # urlpatterns = [
 #     path('api/token/', CustomAuthToken.as_view(), name='api_token_auth'),  # Token endpoint
@@ -54,9 +57,12 @@ router.register('persons', PersonViewSet)
 def home(request):
     return JsonResponse({"message": "Welcome to the API! Use /api/token/ to get a token."})
 urlpatterns = [
-     path('', home, name='home'),
+    path('', home, name='home'),
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),  # Get access & refresh tokens
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),  # Get new access token
-    path('', include(router.urls)),
+    # path('', include(router.urls)),
+    path('another/', AnotherView.as_view(), name='another-throttle'),
+    path('sample/', SampleThrottle.as_view(), name='sample-throttle'),
+    path('custom/', CustomThrottleView.as_view(), name='custom'),
 ]
 

@@ -7,6 +7,7 @@ from rest_framework.authentication import BasicAuthentication, SessionAuthentica
 from rest_framework.permissions import AllowAny, IsAuthenticated, IsAdminUser
 from django.contrib.auth import logout
 from rest_framework.viewsets import ModelViewSet
+from rest_framework.throttling import AnonRateThrottle, UserRateThrottle, ScopedRateThrottle
 # from rest_framework.authtoken.views import ObtainAuthToken
 # from rest_framework.authtoken.models import Token
 from .models import Person
@@ -140,15 +141,39 @@ from .models import Person
 #         return self.destroy(request,*args, **kwargs)
 
 #Model view Set : Simplify the CRUD
-class PersonViewSet(ModelViewSet):
-    queryset = Person.objects.all()
-    serializer_class = PersonSerializer
+# class PersonViewSet(ModelViewSet):
+#     queryset = Person.objects.all()
+#     serializer_class = PersonSerializer
+
+# JWT Authentication
+# class ProtectedView(APIView):
+#     permission_classes = [IsAuthenticated]
 
 
-class ProtectedView(APIView):
-    permission_classes = [IsAuthenticated]
+#     def get(self, request):
+#         return Response({"message": "You are authenticated!", "user": request.user.username})
 
+# Throttling
+class CustomThrottleView(APIView):
+    throttle_classes = [AnonRateThrottle, UserRateThrottle]  # Not necessary if already in settings.py
 
     def get(self, request):
-        return Response({"message": "You are authenticated!", "user": request.user.username})
+        return Response({"message": "Throttling applied"})
+
+class SampleThrottle(APIView):
+    throttle_classes = [ScopedRateThrottle]
+    # permission_classes = [IsAuthenticated]
+    throttle_scope = 'sample'
+
+    def get(self,request):
+        return Response({'message':'This is a throttle method'})
+    
+
+class AnotherView(APIView):
+    throttle_classes = [ScopedRateThrottle]
+    throttle_scope = 'another_scope'  # This matches 'another_scope' in settings.py
+
+    def get(self, request):
+        return Response({'message': 'This is another view with a different throttle limit.'})
+
 

@@ -43,16 +43,32 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
 ]
 
+# REST_FRAMEWORK = {
+#     'DEFAULT_AUTHENTICATION_CLASSES': [
+#         # 'rest_framework.authentication.TokenAuthentication',  # Add token authentication
+#         'rest_framework_simplejwt.authentication.JWTAuthentication',
+#     ],
+#     # 'DEFAULT_PERMISSION_CLASSES': [
+#     #     'rest_framework.permissions.IsAuthenticated',  # Require authentication by default
+#     # ],
+# }
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        # 'rest_framework.authentication.TokenAuthentication',  # Add token authentication
+        'rest_framework.authentication.TokenAuthentication',  # Add token authentication
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ],
-    # 'DEFAULT_PERMISSION_CLASSES': [
-    #     'rest_framework.permissions.IsAuthenticated',  # Require authentication by default
-    # ],
+    'DEFAULT_THROTTLE_CLASSES': [
+        'rest_framework.throttling.AnonRateThrottle',  # For anonymous users
+        'rest_framework.throttling.UserRateThrottle',  # For authenticated users
+        'rest_framework.throttling.UserRateThrottle',  
+    ],
+    'DEFAULT_THROTTLE_RATES': {
+        'anon': '5/minute',   # Max 5 requests per minute for anonymous users
+        'user': '3/minute',  # Max 10 requests per minute for authenticated users
+        'sample': '2/min',
+        'another_scope' : '5/min',
+    }
 }
-
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
