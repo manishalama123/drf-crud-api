@@ -8,6 +8,7 @@ from rest_framework.permissions import AllowAny, IsAuthenticated, IsAdminUser
 from django.contrib.auth import logout
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.throttling import AnonRateThrottle, UserRateThrottle, ScopedRateThrottle
+from rest_framework.pagination import PageNumberPagination, LimitOffsetPagination, CursorPagination
 # from rest_framework.authtoken.views import ObtainAuthToken
 # from rest_framework.authtoken.models import Token
 from .models import Person
@@ -166,7 +167,11 @@ class SampleThrottle(APIView):
     throttle_scope = 'sample'
 
     def get(self,request):
-        return Response({'message':'This is a throttle method'})
+        person = Person.objects.all().order_by('id')
+        paginator = CustomPagination()
+        results = paginator.paginate_queryset(person, request)
+        serialized_data = PersonSerializer(results, many=True)
+        return paginator.get_paginated_response(serialized_data.data)
     
 
 class AnotherView(APIView):
@@ -177,3 +182,13 @@ class AnotherView(APIView):
         return Response({'message': 'This is another view with a different throttle limit.'})
 
 
+# class CustomPagination(PageNumberPagination):
+#     page_size = 5  # Default items per page
+#     page_size_query_param = 'page_size'  # Allows dynamic page size via ?page_size=10
+#     max_page_size = 100  # Prevents excessive data loadingze'
+# class CustomPagination(LimitOffsetPagination):
+#     default_limit = 5
+#     max_size = 10
+class CustomPagination(CursorPagination):
+    page_size = 5  # Default items per page
+    ordering = 'id'

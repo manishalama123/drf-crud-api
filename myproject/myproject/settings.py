@@ -63,11 +63,15 @@ REST_FRAMEWORK = {
         'rest_framework.throttling.UserRateThrottle',  
     ],
     'DEFAULT_THROTTLE_RATES': {
-        'anon': '5/minute',   # Max 5 requests per minute for anonymous users
-        'user': '3/minute',  # Max 10 requests per minute for authenticated users
-        'sample': '2/min',
+        'anon': '10/minute',   # Max 5 requests per minute for anonymous users
+        'user': '20/minute',  # Max 10 requests per minute for authenticated users
+        'sample': '10/min',
         'another_scope' : '5/min',
-    }
+    },
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.CursorPagination',
+    'PAGE_SIZE': 5 
+
+    
 }
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
