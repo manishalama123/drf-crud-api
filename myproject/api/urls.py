@@ -32,6 +32,7 @@ from .views import (
     AnotherView,
     BasicFiltering,
     DjangoFilterView,
+    UserDetails,
 
 )
 
@@ -69,6 +70,7 @@ urlpatterns = [
     path('filter/', BasicFiltering.as_view(), name='filter'),
     # path('djfilter/', DjangoFilterView.as_view(), name='djfilter'),
     # path('searchfilter/', DjangoFilterView.as_view(), name='searchfilter')
-    path('orderfilter/', DjangoFilterView.as_view(), name='orderfilter')
+    path('orderfilter/', DjangoFilterView.as_view(), name='orderfilter'),
+    path('user/<int:pk>/', UserDetails.as_view(), name='user')
 ]
 

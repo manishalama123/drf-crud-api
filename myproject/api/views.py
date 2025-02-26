@@ -8,8 +8,9 @@ from rest_framework.permissions import AllowAny, IsAuthenticated, IsAdminUser
 from django.contrib.auth import logout
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.throttling import AnonRateThrottle, UserRateThrottle, ScopedRateThrottle
-from rest_framework.pagination import PageNumberPagination, LimitOffsetPagination, CursorPagination
+from rest_framework.pagination import PageNumberPagination, LimitOffsetPagination, CursorPagination # type: ignore
 from django_filters.rest_framework import DjangoFilterBackend
+from .customPermission import UserDetails
 # from rest_framework.authtoken.views import ObtainAuthToken
 # from rest_framework.authtoken.models import Token
 from .models import Person
@@ -210,3 +211,7 @@ class DjangoFilterView(generics.ListAPIView):  # ✅ Change APIView to ListAPIVi
     ordering_fields = ['age', 'name']
     ordering = 'id'
 
+class UserDetails(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Person.objects.all()
+    serializer_class = PersonSerializer
+    permission_classes = [IsAuthenticated, UserDetails]
