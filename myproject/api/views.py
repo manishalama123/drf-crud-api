@@ -2,13 +2,14 @@ from django.shortcuts import render
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, APIView
 from .serializer import PersonSerializer
-from rest_framework import status, generics, mixins
+from rest_framework import status, generics, mixins, filters
 from rest_framework.authentication import BasicAuthentication, SessionAuthentication
 from rest_framework.permissions import AllowAny, IsAuthenticated, IsAdminUser
 from django.contrib.auth import logout
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.throttling import AnonRateThrottle, UserRateThrottle, ScopedRateThrottle
 from rest_framework.pagination import PageNumberPagination, LimitOffsetPagination, CursorPagination
+from django_filters.rest_framework import DjangoFilterBackend
 # from rest_framework.authtoken.views import ObtainAuthToken
 # from rest_framework.authtoken.models import Token
 from .models import Person
@@ -161,17 +162,17 @@ class CustomThrottleView(APIView):
     def get(self, request):
         return Response({"message": "Throttling applied"})
 
-class SampleThrottle(APIView):
-    throttle_classes = [ScopedRateThrottle]
-    # permission_classes = [IsAuthenticated]
-    throttle_scope = 'sample'
+# class SampleThrottle(APIView):
+#     throttle_classes = [ScopedRateThrottle]
+#     # permission_classes = [IsAuthenticated]
+#     throttle_scope = 'sample'
 
-    def get(self,request):
-        person = Person.objects.all().order_by('id')
-        paginator = CustomPagination()
-        results = paginator.paginate_queryset(person, request)
-        serialized_data = PersonSerializer(results, many=True)
-        return paginator.get_paginated_response(serialized_data.data)
+#     def get(self,request):
+#         person = Person.objects.all().order_by('id')
+#         paginator = CustomPagination()
+#         results = paginator.paginate_queryset(person, request)
+#         serialized_data = PersonSerializer(results, many=True)
+#         return paginator.get_paginated_response(serialized_data.data)
     
 
 class AnotherView(APIView):
@@ -189,6 +190,23 @@ class AnotherView(APIView):
 # class CustomPagination(LimitOffsetPagination):
 #     default_limit = 5
 #     max_size = 10
-class CustomPagination(CursorPagination):
-    page_size = 5  # Default items per page
+# class CustomPagination(CursorPagination):
+#     page_size = 5  # Default items per page
+#     ordering = 'id'
+
+#Filtering using django ORM
+class BasicFiltering(APIView):
+    def get(self, request):
+        adult = Person.objects.filter(age__gte=18)
+        serializer_class = PersonSerializer(adult, many=True)
+        return Response(serializer_class.data)
+
+
+#Django FIlter Backend
+class DjangoFilterView(generics.ListAPIView):  # ✅ Change APIView to ListAPIView
+    queryset = Person.objects.all()
+    serializer_class = PersonSerializer
+    filter_backends = [filters.OrderingFilter]
+    ordering_fields = ['age', 'name']
     ordering = 'id'
+

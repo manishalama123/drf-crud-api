@@ -27,9 +27,11 @@ from .views import (
     # PersonViewSet,
     # CustomAuthToken,
     # ProtectedView,
-    SampleThrottle,
-    CustomThrottleView,
+    # SampleThrottle,
+    # CustomThrottleView,
     AnotherView,
+    BasicFiltering,
+    DjangoFilterView,
 
 )
 
@@ -62,7 +64,11 @@ urlpatterns = [
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),  # Get new access token
     # path('', include(router.urls)),
     path('another/', AnotherView.as_view(), name='another-throttle'),
-    path('sample/', SampleThrottle.as_view(), name='sample-throttle'),
-    path('custom/', CustomThrottleView.as_view(), name='custom'),
+    # path('sample/', SampleThrottle.as_view(), name='sample-throttle'),
+    # path('custom/', CustomThrottleView.as_view(), name='custom'),
+    path('filter/', BasicFiltering.as_view(), name='filter'),
+    # path('djfilter/', DjangoFilterView.as_view(), name='djfilter'),
+    # path('searchfilter/', DjangoFilterView.as_view(), name='searchfilter')
+    path('orderfilter/', DjangoFilterView.as_view(), name='orderfilter')
 ]
 

@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'api',
     # 'rest_framework.authtoken',
     'rest_framework_simplejwt',
+    'django_filters',
 ]
 
 # REST_FRAMEWORK = {
@@ -53,6 +54,10 @@ INSTALLED_APPS = [
 #     # ],
 # }
 REST_FRAMEWORK = {
+    'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend',
+                                'rest_framework.filters.SearchFilter',
+                                'rest_framework.filters.OrderingFilter',
+                                ],
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.TokenAuthentication',  # Add token authentication
         'rest_framework_simplejwt.authentication.JWTAuthentication',
@@ -68,8 +73,9 @@ REST_FRAMEWORK = {
         'sample': '10/min',
         'another_scope' : '5/min',
     },
-    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.CursorPagination',
-    'PAGE_SIZE': 5 
+    # 'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.CursorPagination',
+    # 'PAGE_SIZE': 5 
+    
 
     
 }
